@@ -30,6 +30,56 @@ J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+X = [ones(m, 1) X]; % Add bias units to input
+
+a2 = sigmoid(X*Theta1');
+ma = size(a2, 1);
+a2 = [ones(ma, 1) a2];
+h = sigmoid(a2*Theta2');
+for i = 1:size(y,1),
+    vec = 1:size(Theta2,1);
+    Yvec = vec == y(i);
+    J = J + sum(-Yvec .* log(h(i,:)) - (1 - Yvec) .* log(1 - h(i,:)));
+end;
+J = (1/m)*J;
+
+% Cost Regularization
+
+Theta1_nb = Theta1(:,2:end);
+Theta2_nb = Theta2(:,2:end);
+Rterm = (lambda/(2*m)) * (sum(sum(Theta1_nb.^2)) + sum(sum(Theta2_nb.^2)));
+J = J + Rterm;
+
+
+% Backpropagation Algorithm :
+
+for i = 1:m,
+    vec = 1:size(Theta2,1);
+    Yvec = vec == y(i);
+    delta_3 = h(i,:) - Yvec;
+    temp = delta_3 * Theta2;
+    delta_2 = temp(2:end) .* sigmoidGradient(X(i,:)*Theta1');
+    Theta1_grad = Theta1_grad + delta_2'*X(i,:);
+    Theta2_grad = Theta2_grad + delta_3'*a2(i,:);
+end;
+Theta1_grad = Theta1_grad/m;
+Theta2_grad = Theta2_grad/m;
+
+% Gradient Regularization :
+
+Reg1 = ones(size(Theta1_grad));
+Reg1(:,1) = 0;
+Reg1 = (lambda/m) .* Theta1 .* Reg1;
+Theta1_grad = Theta1_grad + Reg1;
+
+Reg2 = ones(size(Theta2_grad));
+Reg2(:,1) = 0;
+Reg2 = (lambda/m) .* Theta2 .* Reg2;
+Theta2_grad = Theta2_grad + Reg2;
+
+% size(Theta1_grad)
+% size(Theta1_nb)
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
