@@ -74,6 +74,14 @@ while ~isempty(email_contents)
     if length(str) < 1
        continue;
     end
+    
+    for index = 1:length(vocabList),
+        vstr = vocabList{index};
+        if (strcmp(str, vstr))
+            word_indices = [word_indices ; index];
+            break;
+        end;
+    end;
 
     % Look up the word in the dictionary and add to word_indices if
     % found
