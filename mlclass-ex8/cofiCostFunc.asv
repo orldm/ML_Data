@@ -27,15 +27,14 @@ J = J+r_cost;
 D = (X*Theta' - Y).*R;
 
 for i = 1:size(X,1),
-    X_grad(i,:) = D(i,:)*Theta;
+    X_grad(i,:) = D(i,:)*Theta + lambda.*X(i,:);
 end
 
 for j = 1:size(Theta,1),
-    Theta_grad(j,:) = X'*D(:,j);
+    Theta_grad(j,:) = X'*D(:,j) + lambda.*Theta(j,:);
 end
 
-X_grad = X_grad + lambda.*X;
-Theta_grad = Theta_grad + lambda.*Theta;
+X_grad = X_gr
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost function and gradient for collaborative
